@@ -28,8 +28,6 @@ Giao diện nền xám than, điểm nhấn xanh ngọc, gồm bốn nhóm: **N�
 
 ## Cài đặt
 
-Không cần Node.js hoặc thao tác biên dịch để cài và sử dụng tiện ích.
-
 1. Tải mã nguồn bằng **Code → Download ZIP** trên GitHub, rồi giải nén vào một thư mục cố định.
 2. Mở `chrome://extensions` trong Chrome.
 3. Bật **Developer mode / Chế độ dành cho nhà phát triển**.
@@ -37,10 +35,6 @@ Không cần Node.js hoặc thao tác biên dịch để cài và sử dụng ti
 5. Chọn thư mục chứa trực tiếp file `manifest.json`.
 6. Ghim **auto_flow** trên thanh công cụ để mở bảng bên thuận tiện hơn.
 7. Nếu đang mở Flow, tải lại tab trước khi sử dụng.
-
-Nếu đã cài bản cũ của auto_flow hoặc h2dev_flow, hãy tắt bản cũ để tránh hai tiện ích cùng điều khiển trang.
-
-**Cập nhật:** dừng hàng đợi, thay mã nguồn trong thư mục đã cài, bấm **Reload / Tải lại** trên thẻ tiện ích tại `chrome://extensions`, rồi tải lại tab Flow.
 
 ## Sử dụng
 
@@ -110,8 +104,6 @@ Ví dụ: nhập `41` để chạy từ prompt thứ 41. Khi bật đánh số, 
 | Hiện tượng | Cách xử lý |
 | --- | --- |
 | Chưa kết nối được Flow | Mở project có ô nhập prompt, tải lại tab và mở lại bảng bên. Nếu có nhiều project, chọn tab muốn chạy. |
-| Không gắn được debugger | Đóng DevTools và kiểm tra có công cụ khác đang gỡ lỗi tab hay không. Xem thông báo cụ thể trong bảng bên. |
-| Chưa bắt được request | Kiểm tra chế độ Image, Agent tắt và 1 ảnh / prompt. Kiểm tra trên Flow xem prompt đã gửi chưa trước khi chạy lại. |
 | Phản hồi không nhận diện hoặc bị ngắt | Kiểm tra ảnh trên Flow, lưu thủ công nếu cần và ghi lại dòng prompt cùng thông báo lỗi. |
 | Lỗi đăng nhập, quyền truy cập hoặc hạn mức | Kiểm tra và xử lý trực tiếp trên Flow trước khi tiếp tục. |
 | Ảnh đã tạo nhưng chưa tải được | Kiểm tra Downloads và tải ảnh thủ công từ Flow; tránh gửi lại cùng prompt ngay. |
@@ -130,51 +122,3 @@ Ví dụ: nhập `41` để chạy từ prompt thứ 41. Khi bật đánh số, 
 Phạm vi trang được khai báo: `https://labs.google/*`, `https://flow.google/*` và `https://flow.google.com/*`.
 
 Danh sách prompt và các cài đặt chính được lưu bằng `chrome.storage.local`. Prompt được gửi đến Flow trong phiên đăng nhập hiện tại để tạo ảnh; ảnh được tải về qua Chrome.
-
-## Dành cho lập trình viên
-
-Tiện ích dùng JavaScript, HTML và CSS thuần. Không có bước build bắt buộc.
-
-```text
-auto_flow/
-├── manifest.json           # Cấu hình tiện ích và quyền truy cập
-├── background.js           # Điều phối và thao tác qua debugger
-├── content.js              # Tương tác với trang Flow
-├── flow-protocol.js        # Đọc định dạng yêu cầu/phản hồi
-├── rpc-tracker.js          # Ghép yêu cầu với prompt và kết quả
-├── worker-network.js       # Theo dõi luồng mạng
-├── queue.js                # Quản lý nhóm và thử lại
-├── downloads.js            # Quản lý tải xuống và tên file
-├── sidepanel.html          # Bố cục giao diện
-├── sidepanel.css           # Màu sắc và định dạng
-├── sidepanel.js            # Điều khiển bảng bên
-├── icons/                  # Biểu tượng tiện ích
-├── docs/                   # Ảnh minh họa
-└── tests/                  # Kiểm thử và dữ liệu mô phỏng
-```
-
-Chạy kiểm thử bằng **Node.js 18 trở lên**, tại thư mục chứa `manifest.json`:
-
-```bash
-node --test tests/*.test.cjs
-```
-
-Kiểm thử tích hợp trình duyệt cần Playwright và Chromium:
-
-```bash
-npm install --no-save playwright
-npx playwright install chromium
-node --test tests/extension.browser.cjs
-```
-
-Bài kiểm thử trình duyệt dùng dữ liệu mô phỏng, không xác nhận khả năng hoạt động trên tài khoản Flow thật. Xem lịch sử kiểm tra và các giới hạn tại [VALIDATION.md](VALIDATION.md).
-
-Khi báo lỗi qua GitHub Issues, hãy cung cấp phiên bản Chrome, phiên bản tiện ích, các bước tái hiện và thông báo lỗi. Che thông tin cá nhân, token, cookie và nội dung riêng tư trong ảnh chụp hoặc log trước khi chia sẻ.
-
-## Nguồn gốc và giấy phép
-
-auto_flow được tùy chỉnh từ h2dev_flow, với tên, biểu tượng và giao diện được cập nhật. Phần đọc định dạng yêu cầu/phản hồi được chuyển thể từ [AutoFlowCut](https://github.com/touchizen/AutoFlowCut) của Touchizen, tại commit `211a77933f299fc2f2520f8cb7ceeb161e72a315`.
-
-Bản phân phối kèm theo sử dụng **AGPL-3.0-only** theo thông báo nguồn gốc hiện có. Xem [LICENSE](LICENSE) và [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) để biết chi tiết.
-
-Đây là bản tùy chỉnh độc lập, không phải sản phẩm chính thức của Google hoặc Touchizen.
