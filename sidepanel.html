@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>auto_flow</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="head">
+    <p class="eyebrow">GOOGLE FLOW · v1.3.4</p>
+    <h1>auto_flow</h1>
+    <p class="intro">Tạo ảnh hàng loạt. Tự động tải và đánh số.</p>
+    <div id="conn" class="conn conn--off" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="connText">Đang kiểm tra kết nối…</span>
+    </div>
+  </header>
+  <main>
+    <section class="card" aria-labelledby="sourceTitle">
+      <h2 id="sourceTitle"><span class="step">01</span>Nội dung tạo ảnh</h2>
+      <label class="lbl" for="prompts">Danh sách prompt</label>
+      <textarea id="prompts" rows="5" aria-describedby="promptHint" placeholder="A red bicycle on a rainy street&#10;A watercolor fox in a forest&#10;..."></textarea>
+      <div class="row import-row">
+        <button id="loadTxt" class="btn" type="button">Tải file .txt</button>
+        <input id="txtFile" type="file" accept=".txt" hidden />
+        <span id="count" class="count" aria-live="polite">0 prompt</span>
+      </div>
+      <p id="promptHint" class="hint">Mỗi dòng là một prompt. Giữ nguyên danh sách nếu muốn tiếp tục từ một dòng cụ thể.</p>
+    </section>
+    <section class="card" aria-labelledby="outputTitle">
+      <h2 id="outputTitle"><span class="step">02</span>Lưu ảnh</h2>
+      <label class="lbl" for="folder">Thư mục con trong Downloads</label>
+      <input id="folder" type="text" value="auto_flow" aria-describedby="folderHint" />
+      <p id="folderHint" class="hint">Ảnh lưu tại Downloads / [tên thư mục].</p>
+      <div class="toggle-row">
+        <div>
+          <label class="lbl" for="serial">Đánh số ảnh tự động</label>
+          <p class="hint">Thêm số thứ tự theo dòng prompt.</p>
+        </div>
+        <label class="switch">
+          <input id="serial" type="checkbox" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </label>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle"><span class="step">03</span>Thiết lập chạy</h2>
+      <div class="settings-grid">
+        <div>
+          <label class="lbl" for="firstPrompt">Bắt đầu từ prompt số</label>
+          <input id="firstPrompt" type="number" min="1" step="1" value="1" aria-describedby="resumeHint" />
+        </div>
+        <div>
+          <label class="lbl" for="concurrency">Số prompt mỗi nhóm</label>
+          <select id="concurrency" aria-describedby="groupHint"><option value="1">1 prompt</option><option value="2">2 prompt</option><option value="3">3 prompt</option><option value="4">4 prompt</option><option value="5">5 prompt</option><option value="6">6 prompt</option><option value="7">7 prompt</option><option value="8">8 prompt</option><option value="9">9 prompt</option><option value="10" selected>10 prompt</option></select>
+        </div>
+      </div>
+      <p id="resumeHint" class="hint">Ví dụ: nhập 41 để tiếp tục từ dòng 41, ảnh bắt đầu bằng số 041.</p>
+      <p id="groupHint" class="hint">Hoàn thành toàn bộ ảnh trong nhóm rồi mới gửi nhóm tiếp theo.</p>
+      <fieldset class="delay-field">
+        <legend>Nghỉ giữa các lần gửi (giây)</legend>
+        <div class="delays">
+          <input id="delayMin" type="number" min="0" value="0" aria-label="Thời gian nghỉ tối thiểu (giây)" />
+          <span>đến</span>
+          <input id="delayMax" type="number" min="0" value="0" aria-label="Thời gian nghỉ tối đa (giây)" />
+        </div>
+        <p class="hint">Để 0–0 để gửi liên tiếp trong nhóm.</p>
+      </fieldset>
+      <details id="tip" class="tip">
+        <summary>Trước khi bắt đầu</summary>
+        <p>Chọn <b>Image thông thường, 1 ảnh / prompt</b> trong Flow (không dùng Agent). Đợi tác vụ cũ hoàn thành.</p>
+        <p>Giữ tab Flow và bảng này mở. Không tạo ảnh thủ công hoặc đổi project khi chạy.</p>
+        <p><b>Đóng DevTools (F12)</b> trước khi chạy và giữ thanh vàng “đang gỡ lỗi” khi nó hiện.</p>
+        <p>Chỉ tự thử lại khi máy chủ báo lỗi tạm thời, sau 5–60 giây. Lỗi đăng nhập, hạn mức, định dạng phản hồi hoặc mất dấu tác vụ sẽ dừng gửi thêm để bạn kiểm tra.</p>
+      </details>
+    </section>
+    <section class="card queue-card" aria-labelledby="queueTitle">
+      <div class="qhead">
+        <h2 id="queueTitle"><span class="step">04</span>Hàng đợi</h2>
+        <span id="progress" class="count" aria-live="polite">—</span>
+      </div>
+      <div class="pbar"><div id="pfill" class="pfill"></div></div>
+      <ul id="queue" class="queue" aria-label="Danh sách tác vụ"></ul>
+      <button id="rescan" class="btn rescan" type="button" disabled>Kiểm tra kết quả</button>
+      <p class="hint">Nhận ảnh từ phản hồi của Flow. Kiểm tra kết quả không gửi lại prompt.</p>
+    </section>
+  </main>
+  <footer class="actions">
+    <button id="start" class="btn btn--primary" type="button">Bắt đầu</button>
+    <button id="stop" class="btn btn--danger" type="button" disabled>Dừng</button>
+  </footer>
+  <script src="flow-protocol.js"></script>
+  <script src="queue.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
